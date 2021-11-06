@@ -4,9 +4,13 @@ from scipy.io import arff
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_score, silhouette_samples
+import matplotlib.cm as cm
+import numpy as np
 
 # Constants definition
+from yellowbrick.cluster import SilhouetteVisualizer
+
 GROUP_NUMBER = 16
 
 # Resources
@@ -41,21 +45,44 @@ y = lb.fit_transform(y)
 
 
 # --------------------------------------------------- QUESTION 4 ----------------------------------------------------- #
+range_n_clusters = [2, 3]
+
+i = 1
+
+for n_clusters in range_n_clusters:
+
+    # Creates K-Means cluster with k = n_clusters
+    kmeans = KMeans(n_clusters=n_clusters, random_state=GROUP_NUMBER)
+
+    # Trains model and gets predicted labels
+    cluster_labels = kmeans.fit_predict(X)
+
+    # Calculates silhouette for each kmeans cluster
+    silhouette = silhouette_score(X, cluster_labels)
+    print("Silhouete for =", n_clusters, "cluster isis :", silhouette,)
+
+    plt.figure(figsize=(12, 12))
+
+    index_1 = 2*10**2 + 2*10 + i
+
+    plt.subplot(index_1)
+    plt.scatter(X[:, 0], X[:, 1], c=cluster_labels, cmap='viridis')
+    centers = kmeans.cluster_centers_
+    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=100, alpha=0.5)
+    plt.xlabel('xlabel', fontsize=18)
+    plt.ylabel('ylabel', fontsize=16)
+    plt.title('The visualization of the clustered data')
+
+    index_2 = 2*10**2 + 2*10 + i + 1
+    plt.subplot(index_2)
+    visualizer = SilhouetteVisualizer(kmeans, colors='viridis')
+    visualizer.fit(X)
+    plt.xlabel('Cluster label', fontsize=18)
+    plt.ylabel('Silhouete coefficient values', fontsize=16)
+    plt.title("Silhouette plot for the various clusters")
 
 
-# Creates K-Means cluster with k = 2 and 3
-kmeans_2 = KMeans(n_clusters=2, random_state=GROUP_NUMBER)
-kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
+plt.show()
 
-# Trains both models and gets predicted labels for each one
-label_2 = kmeans_2.fit_predict(X)
-label_3 = kmeans_3.fit_predict(X)
-
-# Calculates silhouette for each kmeans cluster
-silhouette_2 = silhouette_score(X, label_2)
-silhouette_3 = silhouette_score(X, label_3)
-
-print(silhouette_2)
-print(silhouette_3)
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
