@@ -59,7 +59,7 @@ for n_clusters in range_n_clusters:
 
     # Calculates silhouette for each kmeans cluster
     silhouette = silhouette_score(X, cluster_labels)
-    print("Silhouete for =", n_clusters, "cluster isis :", silhouette,)
+    print("Silhouete for = ", n_clusters, "cluster is :", silhouette,)
 
     plt.figure(figsize=(12, 12))
 
@@ -68,17 +68,17 @@ for n_clusters in range_n_clusters:
     plt.subplot(index_1)
     plt.scatter(X[:, 0], X[:, 1], c=cluster_labels, cmap='viridis')
     centers = kmeans.cluster_centers_
-    plt.scatter(centers[:, 0], centers[:, 1], c='black', s=100, alpha=0.5)
-    plt.xlabel('xlabel', fontsize=18)
-    plt.ylabel('ylabel', fontsize=16)
+    plt.scatter(centers[:, 0], centers[:, 1], c='red', s=100, alpha=0.5)
+    plt.xlabel('Feature space for the 1st feature')
+    plt.ylabel('Feature space for the 2nd feature')
     plt.title('The visualization of the clustered data')
 
     index_2 = 2*10**2 + 2*10 + i + 1
     plt.subplot(index_2)
     visualizer = SilhouetteVisualizer(kmeans, colors='viridis')
     visualizer.fit(X)
-    plt.xlabel('Cluster label', fontsize=18)
-    plt.ylabel('Silhouete coefficient values', fontsize=16)
+    plt.xlabel('Cluster label')
+    plt.ylabel('Silhouete coefficient values')
     plt.title("Silhouette plot for the various clusters")
 
 
