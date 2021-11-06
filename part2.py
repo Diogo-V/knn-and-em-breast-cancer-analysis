@@ -4,9 +4,7 @@ from scipy.io import arff
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-from sklearn.metrics import silhouette_score, silhouette_samples
-import matplotlib.cm as cm
-import numpy as np
+from sklearn.metrics import silhouette_score
 
 # Constants definition
 from yellowbrick.cluster import SilhouetteVisualizer
@@ -25,12 +23,12 @@ def flatten(list_of_lists) -> list:
     return list(val for sublist in list_of_lists for val in sublist)
 
 
-def error_classification_rate(label, target, n_clusters) -> float:
+def error_classification_rate(label, target, n_cls) -> float:
     """
     * Calculates the error classification rate for a set of predictions made by a model.
     :param label: predicted values -> list
     :param target: real values -> list
-    :param n_clusters: number of clusters used -> int
+    :param n_cls: number of clusters used -> int
     :return: error calculation rate value -> float
     """
     def get_inter(t_val):
@@ -39,9 +37,8 @@ def error_classification_rate(label, target, n_clusters) -> float:
         :param t_val: target value to test -> (0 = benign or 1 = malignant)
         :return: number of occurrences -> int
         """
-        return len([x for i, x in enumerate(label) if x == target[i] and target[i] == t_val])
-    return sum([label.count(cluster) - max(get_inter(0), get_inter(1)) for cluster in range(n_clusters)]) / n_clusters
-
+        return len([x for j, x in enumerate(label) if x == target[j] and target[j] == t_val])
+    return sum([label.count(cluster) - max(get_inter(0), get_inter(1)) for cluster in range(n_cls)]) / n_cls
 
 
 # ---------------------------------------- PREPROCESSING AND DATA FILTERING ------------------------------------------ #
@@ -71,6 +68,8 @@ y = lb.fit_transform(y)
 
 
 # --------------------------------------------------- QUESTION 4 ----------------------------------------------------- #
+
+
 range_n_clusters = [2, 3]
 
 i = 1
@@ -83,9 +82,11 @@ for n_clusters in range_n_clusters:
     # Trains model and gets predicted labels
     cluster_labels = kmeans.fit_predict(X)
 
+    # Prints ECR result for this cluster
+    print(f"ECR for K=2: {error_classification_rate(list(cluster_labels), flatten(y), n_clusters)}")
+
     # Calculates silhouette for each kmeans cluster
-    silhouette = silhouette_score(X, cluster_labels)
-    print("Silhouete for =", n_clusters, "cluster isis :", silhouette,)
+    print(f"Silhouette for K={n_clusters}: {silhouette_score(X, cluster_labels)}")
 
     plt.figure(figsize=(12, 12))
 
