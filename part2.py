@@ -14,6 +14,32 @@ GROUP_NUMBER = 16
 # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
 
 
+# ------------------------------------------------------ FUNC -------------------------------------------------------- #
+
+
+def flatten(list_of_lists) -> list:
+    return list(val for sublist in list_of_lists for val in sublist)
+
+
+def error_classification_rate(label, target, n_clusters) -> float:
+    """
+    * Calculates the error classification rate for a set of predictions made by a model.
+    :param label: predicted values -> list
+    :param target: real values -> list
+    :param n_clusters: number of clusters used -> int
+    :return: error calculation rate value -> float
+    """
+    def get_inter(t_val):
+        """
+        * Calculates interception between target and label's values
+        :param t_val: target value to test -> (0 = benign or 1 = malignant)
+        :return: number of occurrences -> int
+        """
+        return len([x for i, x in enumerate(label) if x == target[i] and target[i] == t_val])
+    return sum([label.count(cluster) - max(get_inter(0), get_inter(1)) for cluster in range(n_clusters)]) / n_clusters
+
+
+
 # ---------------------------------------- PREPROCESSING AND DATA FILTERING ------------------------------------------ #
 
 
@@ -48,14 +74,16 @@ kmeans_2 = KMeans(n_clusters=2, random_state=GROUP_NUMBER)
 kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
 
 # Trains both models and gets predicted labels for each one
-label_2 = kmeans_2.fit_predict(X)
-label_3 = kmeans_3.fit_predict(X)
+label_2 = list(kmeans_2.fit_predict(X))
+label_3 = list(kmeans_3.fit_predict(X))
+
+# Calculates ECR value
+print(f"ECR for K=2: {error_classification_rate(list(label_2), flatten(y), 2)}")
+print(f"ECR for K=3: {error_classification_rate(list(label_3), flatten(y), 3)}")
 
 # Calculates silhouette for each kmeans cluster
-silhouette_2 = silhouette_score(X, label_2)
-silhouette_3 = silhouette_score(X, label_3)
+print(silhouette_score(X, label_2))
+print(silhouette_score(X, label_3))
 
-print(silhouette_2)
-print(silhouette_3)
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
