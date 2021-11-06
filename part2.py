@@ -4,6 +4,7 @@ from scipy.io import arff
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
 
 # Constants definition
 GROUP_NUMBER = 16
@@ -50,6 +51,11 @@ kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
 label_2 = kmeans_2.fit_predict(X)
 label_3 = kmeans_3.fit_predict(X)
 
-print(label_2)
+# Calculates silhouette for each kmeans cluster
+silhouette_2 = silhouette_score(X, label_2)
+silhouette_3 = silhouette_score(X, label_3)
+
+print(silhouette_2)
+print(silhouette_3)
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
