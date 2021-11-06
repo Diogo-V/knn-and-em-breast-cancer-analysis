@@ -81,7 +81,7 @@ for n_clusters in range_n_clusters:
     cluster_labels = kmeans.fit_predict(X)
 
     # Prints ECR result for this cluster
-    print(f"ECR for K=2: {error_classification_rate(list(cluster_labels), flatten(y), n_clusters)}")
+    print(f"ECR for K={n_clusters}: {error_classification_rate(list(cluster_labels), flatten(y), n_clusters)}")
 
     # Calculates silhouette for each kmeans cluster
     print(f"Silhouette for K={n_clusters}: {silhouette_score(X, cluster_labels)}")
