@@ -105,6 +105,8 @@ plt.show()
 
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
+
+
 # Selects the best k features using mutual information
 X_new = SelectKBest(mutual_info_classif, k=2).fit_transform(X, y.ravel())
 
