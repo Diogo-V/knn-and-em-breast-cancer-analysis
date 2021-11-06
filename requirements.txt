@@ -2,3 +2,5 @@ pandas
 scipy
 sklearn
 matplotlib
+numpy
+yellowbrick
