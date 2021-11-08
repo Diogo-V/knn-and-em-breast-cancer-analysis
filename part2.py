@@ -105,14 +105,15 @@ plt.show()
 
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
-# Selects the best k features using mutual information
-X_new = SelectKBest(mutual_info_classif, k=2).fit_transform(X, y.ravel())
-
+# TODO: depois acabar
 # Creates K-Means cluster with k = 3
 kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
 
 # Trains model and gets predicted labels
-cluster_labels_3 = kmeans_3.fit_predict(X_new)
+cluster_labels_3 = kmeans_3.fit_predict(X)
+
+# Selects the best k features using mutual information
+X_new = SelectKBest(mutual_info_classif, k=2).fit_transform(X, y.ravel())
 
 # Plot clusters
 plt.scatter(X[:, 0], X[:, 1], c=cluster_labels_3, s=50,  cmap='viridis')
