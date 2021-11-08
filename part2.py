@@ -105,7 +105,6 @@ plt.show()
 
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
-# TODO: depois acabar
 # Creates K-Means cluster with k = 3
 kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
 
