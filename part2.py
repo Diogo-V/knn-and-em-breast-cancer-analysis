@@ -32,14 +32,15 @@ def error_classification_rate(label, target, n_cls) -> float:
     :param n_cls: number of clusters used -> int
     :return: error calculation rate value -> float
     """
-    def get_inter(t_val) -> int:
+    def get_inter(t_val, n_clt) -> int:
         """
         * Calculates interception between target and label's values
         :param t_val: target value to test -> (0 = benign or 1 = malignant)
+        :param n_clt: number of the cluster that is being tested -> int
         :return: number of occurrences -> int
         """
-        return len([val for j, val in enumerate(label) if target[j] == t_val and val == target[j]])
-    return sum([label.count(cluster) - max(get_inter(0), get_inter(1)) for cluster in range(n_cls)]) / n_cls
+        return len([val for j, val in enumerate(label) if target[j] == t_val and val == n_clt])
+    return sum([label.count(clt) - max(get_inter(0, clt), get_inter(1, clt)) for clt in range(n_cls)]) / n_cls
 
 
 # ---------------------------------------- PREPROCESSING AND DATA FILTERING ------------------------------------------ #
