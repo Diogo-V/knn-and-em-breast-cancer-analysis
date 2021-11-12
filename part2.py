@@ -6,10 +6,10 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
 from sklearn.feature_selection import mutual_info_classif, SelectKBest
-
-# Constants definition
+import numpy as np
 from yellowbrick.cluster import SilhouetteVisualizer
 
+# Constants definition
 GROUP_NUMBER = 16
 
 # Resources
@@ -43,6 +43,16 @@ def error_classification_rate(label, target, n_cls) -> float:
     return sum([label.count(clt) - max(get_inter(0, clt), get_inter(1, clt)) for clt in range(n_cls)]) / n_cls
 
 
+def extract_matrix_selected_columns(matrix, selected_x) -> list:
+    extracted = []
+    for index, column in enumerate(matrix.T):
+        for x in selected_x.T:
+            compare = column == x
+            if compare.all():
+                extracted.append(index)
+    return extracted
+
+
 # ---------------------------------------- PREPROCESSING AND DATA FILTERING ------------------------------------------ #
 
 
@@ -71,9 +81,9 @@ y = lb.fit_transform(y)
 
 # --------------------------------------------------- QUESTION 4 ----------------------------------------------------- #
 
-range_n_clusters = [2, 3]
 
-for n_clusters in range_n_clusters:
+# Goes through every number of clusters
+for n_clusters in [2, 3]:
 
     # Creates K-Means cluster with k = n_clusters
     kmeans = KMeans(n_clusters=n_clusters, random_state=GROUP_NUMBER)
@@ -98,7 +108,7 @@ for n_clusters in range_n_clusters:
 
     # Plot tittle
     plt.xlabel('Cluster label')
-    plt.ylabel('Silhouete coefficient values')
+    plt.ylabel('Silhouette coefficient values')
     plt.title("Silhouette plot for the various clusters")
 
 
@@ -106,6 +116,8 @@ plt.show()
 
 
 # --------------------------------------------------- QUESTION 5 ----------------------------------------------------- #
+
+
 # Creates K-Means cluster with k = 3
 kmeans_3 = KMeans(n_clusters=3, random_state=GROUP_NUMBER)
 
@@ -116,11 +128,12 @@ cluster_labels_3 = kmeans_3.fit_predict(X)
 X_new = SelectKBest(mutual_info_classif, k=2).fit_transform(X, y.ravel())
 
 # Plot clusters
-plt.scatter(X[:, 0], X[:, 1], c=cluster_labels_3, s=50,  cmap='viridis')
+plt.scatter(X_new[:, 0], X_new[:, 1], c=cluster_labels_3, s=50,  cmap='viridis')
 
-# Plot cluster centroids
+# Plot cluster centroids and finds the indexes of X which where chosen to only plot those values of the centroids
 centers = kmeans_3.cluster_centers_
-plt.scatter(centers[:, 0], centers[:, 1], c='red', s=100, alpha=0.5)
+selected = extract_matrix_selected_columns(X, np.array(X_new))
+plt.scatter(centers[:, selected[0]], centers[:, selected[1]], c='red', s=100, alpha=0.5)
 
 # Plot tittles
 plt.xlabel('Feature space for the 1st feature')
