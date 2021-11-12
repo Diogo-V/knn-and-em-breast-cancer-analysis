@@ -44,10 +44,10 @@ likelihood_p2_x3 = p2.pdf(x3)
 likelihood_p2_x4 = p2.pdf(x4)
 
 # Joint probabilitie for c = 2
-joint_p2_x1 = likelihood_p2_x1 * phi_1
-joint_p2_x2 = likelihood_p2_x2 * phi_1
-joint_p2_x3 = likelihood_p2_x3 * phi_1
-joint_p2_x4 = likelihood_p2_x4 * phi_1
+joint_p2_x1 = likelihood_p2_x1 * phi_2
+joint_p2_x2 = likelihood_p2_x2 * phi_2
+joint_p2_x3 = likelihood_p2_x3 * phi_2
+joint_p2_x4 = likelihood_p2_x4 * phi_2
 
 # Posterior probabilities for c = 1
 posterior_p1_x1 = joint_p1_x1/(joint_p1_x1 + joint_p2_x1)
@@ -91,7 +91,10 @@ u2 = (posterior_p2_x1 * np.transpose(x1) + posterior_p2_x2 * np.transpose(x2) + 
       posterior_p2_x4 * np.transpose(x4)) / posterior_p2_sum
 
 # New covariance matrices
-E1_new = ((posterior_p1_x1 * np.dot(np.subtract(x1, u1), np.transpose(np.subtract(x1, u1)))) + (posterior_p1_x2 * np.dot(np.subtract(x2, u1), np.transpose(np.subtract(x2, u1)))) + (posterior_p1_x3 * np.dot(np.subtract(x3, u1), np.transpose(np.subtract(x3, u1)))) + (posterior_p1_x4 * np.dot(np.subtract(x4, u1), np.transpose(np.subtract(x4, u1))))) / posterior_p1_sum
+E1_new_00 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
+E1_new_01 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[1], u1[1])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[1], u1[1]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[1], u1[1]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[1], u1[1])))) / posterior_p1_sum
+E1_new_10 = (posterior_p1_x1 * np.dot(np.subtract(x1[1], u1[1]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[1], u1[1]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[1], u1[1]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[1], u1[1]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
+E1_new_00 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
 E2_new = ((posterior_p2_x1 * np.dot(np.subtract(x1, u2), np.transpose(np.subtract(x1, u2)))) + (posterior_p2_x2 * np.dot(np.subtract(x2, u2), np.transpose(np.subtract(x2, u2)))) + (posterior_p2_x3 * np.dot(np.subtract(x3, u2), np.transpose(np.subtract(x3, u2)))) + (posterior_p2_x4 * np.dot(np.subtract(x4, u2), np.transpose(np.subtract(x4, u2))))) / posterior_p2_sum
 
 
@@ -101,3 +104,4 @@ phi_2_new = posterior_p2_sum / 4
 
 print('For c = 1, new centroid mean: ', u1, 'new E1: ', E1_new, 'new prior: ', phi_1_new)
 print('For c = 2, new centroid mean: ', u2, 'new E1: ', E2_new, 'new prior: ', phi_2_new)
+
