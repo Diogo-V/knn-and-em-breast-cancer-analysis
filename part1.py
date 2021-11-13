@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.stats import multivariate_normal, norm
 from scipy.spatial import distance
+import matplotlib.pyplot as plt
+from math import pi
 
 # --------------------------------------------------- QUESTION 1 ----------------------------------------------------- #
 E1 = [[1, 0], [0, 1]]
@@ -116,7 +118,20 @@ print('For c = 2, new centroid mean: ', u2, 'new E2: ', E2_new, 'new prior: ', p
 
 
 # Plot Clustering Solutions
+x_coordinates = [1, 2, 3]
+y_coordinates = [4, 5, 6]
 
+# Create figure canvas
+plt.figure(figsize=(12, 12))
+
+plt.scatter(x=[u1[0], u2[0]], y=[u1[1], u2[1]], c='r', label='One Point')  # use this to plot a single point
+plt.scatter(x=[x1[0], x2[0], x3[0], x4[0]], y=[x1[1], x2[1], x3[1], x4[1]], c='g', label='Multiple Points')
+
+t = np.linspace(0, 2*pi, 100)
+plt.plot(u1[0]+E1_new_00*np.cos(t), u1[1]+E1_new_11*np.sin(t))
+plt.plot(u2[0]+E2_new_00*np.cos(t), u2[1]+E2_new_11*np.sin(t))
+
+plt.show()
 # --------------------------------------------------- QUESTION 2 ----------------------------------------------------- #
 
 #From question 1, x1, x3 and x4 are in cluster 1 and x2 in c2
