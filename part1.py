@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import multivariate_normal, norm
+from scipy.spatial import distance
 
 # --------------------------------------------------- QUESTION 1 ----------------------------------------------------- #
 E1 = [[1, 0], [0, 1]]
@@ -91,17 +92,57 @@ u2 = (posterior_p2_x1 * np.transpose(x1) + posterior_p2_x2 * np.transpose(x2) + 
       posterior_p2_x4 * np.transpose(x4)) / posterior_p2_sum
 
 # New covariance matrices
-E1_new_00 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
+E1_new_00 = (posterior_p1_x1 * np.power(np.subtract(x1[0], u1[0]), 2) + (posterior_p1_x2 * np.power(np.subtract(x2[0], u1[0]), 2)) + (posterior_p1_x3 * np.power(np.subtract(x3[0], u1[0]), 2)) + (posterior_p1_x4 * np.power(np.subtract(x4[0], u1[0]), 2))) / posterior_p1_sum
 E1_new_01 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[1], u1[1])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[1], u1[1]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[1], u1[1]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[1], u1[1])))) / posterior_p1_sum
 E1_new_10 = (posterior_p1_x1 * np.dot(np.subtract(x1[1], u1[1]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[1], u1[1]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[1], u1[1]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[1], u1[1]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
-E1_new_00 = (posterior_p1_x1 * np.dot(np.subtract(x1[0], u1[0]), np.subtract(x1[0], u1[0])) + (posterior_p1_x2 * np.dot(np.subtract(x2[0], u1[0]), np.subtract(x2[0], u1[0]))) + (posterior_p1_x3 * np.dot(np.subtract(x3[0], u1[0]), np.subtract(x3[0], u1[0]))) + (posterior_p1_x4 * np.dot(np.subtract(x4[0], u1[0]), np.subtract(x4[0], u1[0])))) / posterior_p1_sum
-E2_new = ((posterior_p2_x1 * np.dot(np.subtract(x1, u2), np.transpose(np.subtract(x1, u2)))) + (posterior_p2_x2 * np.dot(np.subtract(x2, u2), np.transpose(np.subtract(x2, u2)))) + (posterior_p2_x3 * np.dot(np.subtract(x3, u2), np.transpose(np.subtract(x3, u2)))) + (posterior_p2_x4 * np.dot(np.subtract(x4, u2), np.transpose(np.subtract(x4, u2))))) / posterior_p2_sum
+E1_new_11 = (posterior_p1_x1 * np.power(np.subtract(x1[1], u1[1]), 2) + (posterior_p1_x2 * np.power(np.subtract(x2[1], u1[1]), 2)) + (posterior_p1_x3 * np.power(np.subtract(x3[1], u1[1]), 2)) + (posterior_p1_x4 * np.power(np.subtract(x4[1], u1[1]), 2))) / posterior_p1_sum
 
+E1_new = [[E1_new_00, E1_new_01], [E1_new_10, E1_new_11]]
+
+
+E2_new_00 = (posterior_p2_x1 * np.power(np.subtract(x1[0], u2[0]), 2) + (posterior_p2_x2 * np.power(np.subtract(x2[0], u2[0]), 2)) + (posterior_p2_x3 * np.power(np.subtract(x3[0], u2[0]), 2)) + (posterior_p2_x4 * np.power(np.subtract(x4[0], u2[0]), 2))) / posterior_p2_sum
+E2_new_01 = (posterior_p2_x1 * np.dot(np.subtract(x1[0], u2[0]), np.subtract(x1[1], u2[1])) + (posterior_p2_x2 * np.dot(np.subtract(x2[0], u2[0]), np.subtract(x2[1], u2[1]))) + (posterior_p2_x3 * np.dot(np.subtract(x3[0], u2[0]), np.subtract(x3[1], u2[1]))) + (posterior_p2_x4 * np.dot(np.subtract(x4[0], u2[0]), np.subtract(x4[1], u2[1])))) / posterior_p2_sum
+E2_new_10 = (posterior_p2_x1 * np.dot(np.subtract(x1[1], u2[1]), np.subtract(x1[0], u2[0])) + (posterior_p2_x2 * np.dot(np.subtract(x2[1], u2[1]), np.subtract(x2[0], u2[0]))) + (posterior_p2_x3 * np.dot(np.subtract(x3[1], u2[1]), np.subtract(x3[0], u2[0]))) + (posterior_p2_x4 * np.dot(np.subtract(x4[1], u2[1]), np.subtract(x4[0], u2[0])))) / posterior_p2_sum
+E2_new_11 = (posterior_p2_x1 * np.power(np.subtract(x1[1], u2[1]), 2) + (posterior_p2_x2 * np.power(np.subtract(x2[1], u2[1]), 2)) + (posterior_p2_x3 * np.power(np.subtract(x3[1], u2[1]), 2)) + (posterior_p2_x4 * np.power(np.subtract(x4[1], u2[1]), 2))) / posterior_p2_sum
+
+E2_new = [[E2_new_00, E2_new_01], [E2_new_10, E2_new_11]]
 
 # New priors
 phi_1_new = posterior_p1_sum / 4
 phi_2_new = posterior_p2_sum / 4
 
 print('For c = 1, new centroid mean: ', u1, 'new E1: ', E1_new, 'new prior: ', phi_1_new)
-print('For c = 2, new centroid mean: ', u2, 'new E1: ', E2_new, 'new prior: ', phi_2_new)
+print('For c = 2, new centroid mean: ', u2, 'new E2: ', E2_new, 'new prior: ', phi_2_new)
 
+
+# Plot Clustering Solutions
+
+# --------------------------------------------------- QUESTION 2 ----------------------------------------------------- #
+
+#From question 1, x1, x3 and x4 are in cluster 1 and x2 in c2
+
+# Average distance of xi to the points of its clusters
+a_x1 = (distance.euclidean(x1, x3) + distance.euclidean(x1, x4)) / 2
+a_x3 = (distance.euclidean(x3, x1) + distance.euclidean(x3, x4)) / 2
+a_x4 = (distance.euclidean(x4, x1) + distance.euclidean(x4, x3)) / 2
+a_x2 = 0
+
+# Min(average distance of xi to points in another cluster)
+b_x1 = distance.euclidean(x1, x2)
+b_x3 = distance.euclidean(x3, x2)
+b_x4 = distance.euclidean(x4, x2)
+b_x2 = min(distance.euclidean(x2, x1),distance.euclidean(x2, x3), distance.euclidean(x2, x4)) / 3
+
+silhouette_x1 = (b_x1 - a_x1) / max(b_x1, a_x1)
+silhouette_x3 = (b_x3 - a_x3) / max(b_x3, a_x3)
+silhouette_x4 = (b_x4 - a_x4) / max(b_x4, a_x4)
+
+silhouette_c1 = (silhouette_x1 + silhouette_x3 + silhouette_x4) / 3
+
+silhouette_C = silhouette_c1 /2
+
+print("a_x1: ", a_x1, "\nb_x1:", b_x1, "\nsilhouette x1:", silhouette_x1, '\n')
+print("a_x3: ", a_x3, "\nb_x3:", b_x3, "\nsilhouette x3:", silhouette_x3, '\n')
+print("a_x4: ", a_x4, "\nb_x4:", b_x4, "\nsilhouette x4:", silhouette_x4, '\n')
+print("silhouette c1: ", silhouette_c1, "\n")
+print("silhouette C: ", silhouette_C, "\n")
