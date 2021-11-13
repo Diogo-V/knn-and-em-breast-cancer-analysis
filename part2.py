@@ -53,6 +53,31 @@ def extract_matrix_selected_columns(matrix, selected_x) -> list:
     return extracted
 
 
+def filter_benign_and_malignant(values, labels) -> dict:
+
+    # Hold filtered values
+    benign = []
+    lbl_benign = []
+    malignant = []
+    lbl_malignant = []
+
+    # Filters values
+    for index, val in enumerate(values):
+        if y[index] == 1:
+            malignant.append(val)
+            lbl_malignant.append(labels[index])
+        else:
+            benign.append(val)
+            lbl_benign.append(labels[index])
+
+    return {
+        "benign": benign,
+        "lbl_benign": lbl_benign,
+        "malignant": malignant,
+        "lbl_malignant": lbl_malignant
+    }
+
+
 # ---------------------------------------- PREPROCESSING AND DATA FILTERING ------------------------------------------ #
 
 
@@ -127,12 +152,18 @@ cluster_labels_3 = kmeans_3.fit_predict(X)
 # Selects the best k features using mutual information
 X_new = SelectKBest(mutual_info_classif, k=2).fit_transform(X, y.ravel())
 
-# Plot clusters
-plt.scatter(X_new[:, 0], X_new[:, 1], c=cluster_labels_3, s=50,  cmap='viridis')
-
-# Plot cluster centroids and finds the indexes of X which where chosen to only plot those values of the centroids
-centers = kmeans_3.cluster_centers_
+# Finds the indexes of X which where chosen to only plot those values of the centroids
 selected = extract_matrix_selected_columns(X, np.array(X_new))
+
+# Filters the X_new values into benign and malignant to plot them with different markers
+plot = filter_benign_and_malignant(X_new, cluster_labels_3)
+
+# Plot clusters
+plt.scatter(np.array(plot["malignant"])[:, 0], np.array(plot["malignant"])[:, 1], c=plot["lbl_malignant"], s=50, cmap='rainbow', marker="*")
+plt.scatter(np.array(plot["benign"])[:, 0], np.array(plot["benign"])[:, 1], c=plot["lbl_benign"], s=50, cmap='viridis', marker="o")
+
+# Plot cluster centroids
+centers = kmeans_3.cluster_centers_
 plt.scatter(centers[:, selected[0]], centers[:, selected[1]], c='red', s=100, alpha=0.5)
 
 # Plot tittles
